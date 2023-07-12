@@ -11,10 +11,23 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 Config.Register(builder.Services, builder.Configuration);
+
+var devCorsPolicy = "devCorsPolicy";
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(devCorsPolicy, builder => {
+        //builder.WithOrigins("http://localhost:800").AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+        builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
+        //builder.SetIsOriginAllowed(origin => new Uri(origin).Host == "localhost");
+        //builder.SetIsOriginAllowed(origin => true);
+    });
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 app.UseSwagger();
+app.UseCors(devCorsPolicy);
 app.UseSwaggerUI();
 // Configure Middlewares
 app.UseMiddleware<AuthorizationMiddleware>();
